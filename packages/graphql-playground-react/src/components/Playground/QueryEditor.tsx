@@ -75,6 +75,20 @@ export class QueryEditor extends React.PureComponent<Props & ReduxProps, {}> {
     }
   }
 
+  ExampleRule= context => {
+    // your custom rules here 
+    const schema = context.getSchema();
+    const document = context.getDocument();
+    console.log('rule validating');
+    
+    return {
+      NamedType(node) {
+        if (node.name.value !== node.name.value.toLowercase()) {
+          context.reportError('only lowercase type names allowed!');
+        }
+      },
+    };
+  };
   componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
@@ -119,7 +133,7 @@ export class QueryEditor extends React.PureComponent<Props & ReduxProps, {}> {
         minFoldSize: 4,
       },
       lint: {
-        schema: this.props.schema,
+        schema: this.props.schema, validationRules: [this.ExampleRule]
       },
       hintOptions: {
         schema: this.props.schema,
